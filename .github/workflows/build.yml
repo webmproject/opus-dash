@@ -15,9 +15,23 @@ jobs:
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - run: sudo gem install kramdown
-      - run: kramdown --template build/html-template ${{ env.IN_FILE }} > ${{ env.OUT_FILE_NAME }}.html
-      - run: |
+      - name: install kramdown
+        run: sudo gem install kramdown
+      - name: Convert Markdown to HTML
+        run: kramdown --template build/html-template ${{ env.IN_FILE }} > ${{ env.OUT_FILE_NAME }}.html
+      - name: Convert HTML to PDF
+        run: |
           docker run --security-opt seccomp=unconfined \
           --rm -v $(pwd):/converted/ arachnysdocker/athenapdf athenapdf --no-cache \
           ${{ env.OUT_FILE_NAME }}.html ${{ env.OUT_FILE_NAME }}.pdf
+      - name: Gather deploy files
+        run: |
+          mkdir -p /tmp/deploy
+          [[ -d images ]] && cp -r images /tmp/deploy/
+          cp ${{ env.OUT_FILE_NAME }}.html /tmp/deploy/
+          cp ${{ env.OUT_FILE_NAME }}.pdf /tmp/deploy/
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/deploy/
