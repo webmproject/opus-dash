@@ -26,12 +26,12 @@ jobs:
           ${{ env.OUT_FILE_NAME }}.html ${{ env.OUT_FILE_NAME }}.pdf
       - name: Gather deploy files
         run: |
-          mkdir -p /tmp/deploy
-          [[ -d images ]] && cp -r images /tmp/deploy/
-          cp ${{ env.OUT_FILE_NAME }}.html /tmp/deploy/
-          cp ${{ env.OUT_FILE_NAME }}.pdf /tmp/deploy/
+          mkdir -p deploy
+          [[ -d images ]] && cp -r images ./deploy/
+          cp ${{ env.OUT_FILE_NAME }}.html ./deploy/
+          cp ${{ env.OUT_FILE_NAME }}.pdf ./deploy/
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: /tmp/deploy/
+          publish_dir: ./deploy/
