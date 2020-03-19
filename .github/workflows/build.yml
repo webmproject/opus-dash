@@ -10,11 +10,12 @@ jobs:
     env:
       IN_FILE: opus-iso-binding.md
       OUT_FILE_NAME: opus-iso-binding
+      RUBY_VERSION: 2.7
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ${{ env.RUBY_VERSION }}
       - name: install kramdown
         run: sudo gem install kramdown
       - name: Convert Markdown to HTML
