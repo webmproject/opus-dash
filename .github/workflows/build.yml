@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  env:
+    IN_FILE: opus-iso-binding.md
+    OUT_FILE_NAME: opus-iso-binding
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - run: sudo gem install kramdown
+      - run: kramdown --template build/html-template ${{ IN_FILE }} > ${{ OUT_FILE_NAME }}.html
+      - run: |
+          docker run --security-opt seccomp=unconfined \
+          --rm -v $(pwd):/converted/ arachnysdocker/athenapdf athenapdf --no-cache \
+          ${{ OUT_FILE_NAME }}.html ${{ OUT_FILE_NAME }}.pdf
