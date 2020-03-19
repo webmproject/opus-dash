@@ -5,11 +5,11 @@ on:
     branches:
       - master
 jobs:
-  env:
-    IN_FILE: opus-iso-binding.md
-    OUT_FILE_NAME: opus-iso-binding
   build:
     runs-on: ubuntu-latest
+    env:
+      IN_FILE: opus-iso-binding.md
+      OUT_FILE_NAME: opus-iso-binding
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-ruby@v1
